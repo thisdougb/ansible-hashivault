@@ -1,0 +1,22 @@
+---
+- hosts: all
+
+  tasks:
+
+    - name: install Ansible ssh key
+      authorized_key:
+        user: vagrant
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+    - name: copy /etc/hosts to remote
+      copy:
+        src: /etc/hosts
+        dest: /etc/hosts
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: install net-tools
+      yum:
+        name: net-tools
+        state: present

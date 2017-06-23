@@ -9,11 +9,15 @@ laptop $ mkdir vault-testing
 laptop $ cd vault-testing/
 laptop $ curl -sO https://raw.githubusercontent.com/thisdougb/ansible-hashivault/master/vagrant/Vagrantfile
 laptop $ curl -sO https://raw.githubusercontent.com/thisdougb/ansible-hashivault/master/vagrant/servers.yml
+```
+```
 laptop $ cat servers.yml 
 ---
 - name: vault
   ip: 172.28.128.16
   
+```
+```
 laptop $ cat Vagrantfile 
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
@@ -40,6 +44,8 @@ File.open('etc_hosts', 'w') { |f|
     f.write("#{server['ip']}\t#{server['name']}\n")
   end
 }
+```
+```
 laptop $ vagrant up
 Bringing machine 'vault' up with 'virtualbox' provider...
 ==> vault: Importing base box 'centos7'...

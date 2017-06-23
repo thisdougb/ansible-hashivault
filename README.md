@@ -70,7 +70,7 @@ sys/        system     n/a          n/a      system endpoints used for control, 
 ```
 
 ### Additional Notes
-The init role drops the vault keys and root token into the home directory of the ansible host user.   This allows other roles to use the keys to unseal and read/write to the vault.   This is fine for testing, but you probably want a manual init/unseal process in production.
+The init role drops the vault keys and root token into the home directory of the ansible host user.   This allows other roles to use the keys to unseal and read/write to the vault.   This is fine for testing, but you will want a manual init/unseal process in production.
 ```
 ansible $ cat ~/.hashicorp_vault_keys.json 
 {"keys": ["4ca011fb3c4a1ba9c97738dfc9a6424c01d3136673c5eb6ad3c86a720b39959601", "5af792ff6f420547f65b132a1b842634e2b8ccedaa00fb76cecc6856139bf04702"],
@@ -78,7 +78,7 @@ ansible $ cat ~/.hashicorp_vault_keys.json
 89-cd6418cc97b1"}
 ```
 
-The root token (used to authenticate to vault) is also dropped into the home directory of the root user on the vault instance.   This, for testing, gives you a access to the vault for playing around and troubleshooting.   The vault cli looks for this file, as well as the $VAULT_ADDR environment variable.
+The root token (super-user access) is also dropped into the home directory of the root user on the vault instance.   This, for testing, gives you easy access to the vault for playing around and troubleshooting.   The vault cli looks for this file, as well as the $VAULT_ADDR environment variable.
 ```
 [root@vault ~]# cat /root/.vault-token 
 8ec58cb7-712e-3454-0f89-cd6418cc97b1

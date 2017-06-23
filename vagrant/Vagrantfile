@@ -1,0 +1,25 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require 'yaml'
+
+servers = YAML.load_file(File.join(File.dirname(__FILE__), 'servers.yml'))
+
+Vagrant.configure("2") do |config|
+
+  config.vm.box = "centos7"
+  config.vm.box_check_update = false
+
+  servers.each do |server|
+    config.vm.define server['name'] do |srv|
+      srv.vm.hostname = server['name']
+      srv.vm.network "private_network", ip: server['ip']
+    end
+  end
+end
+
+File.open('etc_hosts', 'w') { |f|
+  servers.each do |server|
+    f.write("#{server['ip']}\t#{server['name']}\n")
+  end
+}

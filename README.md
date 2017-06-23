@@ -69,6 +69,13 @@ secret/     generic    system       system   generic secret storage
 sys/        system     n/a          n/a      system endpoints used for control, policy and debugging
 ```
 
+We listen locally on port 8200, and using TLS on port 8201 on external interfaces:
+```
+[root@vault ~]# netstat -atnp | grep vault
+tcp        0      0 127.0.0.1:8200          0.0.0.0:*               LISTEN      6873/vault          
+tcp6       0      0 :::8201                 :::*                    LISTEN      6873/vault
+```
+
 ### Additional Notes
 The init role drops the vault keys and root token into the home directory of the ansible host user.   This allows other roles to use the keys to unseal and read/write to the vault.   This is fine for testing, but you will want a manual init/unseal process in production.
 ```

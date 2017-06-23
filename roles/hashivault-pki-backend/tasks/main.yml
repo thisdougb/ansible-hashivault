@@ -1,0 +1,108 @@
+---
+# tasks file for roles/hashivault-pki
+
+- name: retrieve keys locally
+  set_fact:
+    vault_keys: "{{ lookup('file','~/.hashicorp_vault_keys.json') | from_json }}"
+  delegate_to: localhost
+  become: no
+
+#- name: mount vault pki
+#  command: /usr/local/bin/vault mount pki
+#  environment:
+#    VAULT_ADDR: "http://127.0.0.1:8200/"
+
+- name: mount the pki backend
+  uri:
+    url: http://127.0.0.1:8200/v1/sys/mounts/pki
+    method: POST
+    headers:
+      X-Vault-Token: "{{ vault_keys.root_token }}"
+    body:
+      type:
+        pki
+      description:
+        Certificate delivery for AnsibleFest London 2017
+    status_code: 204
+    body_format: json
+
+- name: generate root cert
+  uri:
+    url: http://127.0.0.1:8200/v1/pki/root/generate/exported
+    method: POST
+    headers:
+      X-Vault-Token: "{{ vault_keys.root_token }}"
+    body:
+      common_name:
+        vault.ansiblefest.com
+    body_format: json
+    return_content: yes
+  register: root_cert_data
+
+- name: create our pki policy
+  uri:
+    url: http://127.0.0.1:8200/v1/pki/roles/fest_london
+    method: POST
+    headers:
+      X-Vault-Token: "{{ vault_keys.root_token }}"
+    body:
+      allowed_domains:
+        ansiblefest.com
+      allow_subdomains:
+        true
+      max_ttl:
+        168h
+    body_format: json
+    status_code: 204
+    return_content: yes
+
+- name: a directory for our tls data
+  file:
+    path: /var/lib/vault/pki
+    state: directory
+
+- name: install root certificate file
+  copy:
+    content: "{{ root_cert_data.json.data.certificate }}"
+    dest: /var/lib/vault/pki/root_cert.pem
+
+- name: install root key file
+  copy:
+    content: "{{ root_cert_data.json.data.private_key }}"
+    dest: /var/lib/vault/pki/root_key.pem
+
+- name: add tls listener config
+  blockinfile:
+    dest: /etc/vault.cfg
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    insertafter: EOF
+    block: |
+      listener "tcp" {
+       address = "0.0.0.0:8201"
+       tls_cert_file = "/var/lib/vault/pki/root_cert.pem"
+       tls_key_file = "/var/lib/vault/pki/root_key.pem"
+      }
+
+- name: restart vault
+  service:
+    name: vault
+    state: restarted
+
+# trust the Vault root CA locally
+- name: update-ca-trust enable
+  command: /bin/update-ca-trust enable
+  delegate_to: localhost
+  become: yes
+
+- name: install root certificate file locally
+  copy:
+    content: "{{ root_cert_data.json.data.certificate }}"
+    dest: /etc/pki/ca-trust/source/anchors/vault.crt
+    force: yes
+  delegate_to: localhost
+  become: yes
+
+- name: update-ca-trust extract
+  command: /bin/update-ca-trust
+  delegate_to: localhost
+  become: yes

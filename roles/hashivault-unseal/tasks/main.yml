@@ -1,0 +1,21 @@
+- name: start vault
+  service:
+    name: vault
+    state: started
+
+- name: retrieve keys locally
+  set_fact:
+    vault_keys: "{{ lookup('file','~/.hashicorp_vault_keys.json') | from_json }}"
+  delegate_to: localhost
+  become: no
+
+- name: unseal vault
+  uri:
+    url: "http://localhost:8200/v1/sys/unseal"
+    method: PUT
+    body: "{ 'key':'{{ item }}' }"
+    body_format: json
+    return_content: yes
+    status_code: 200
+  with_items: "{{ vault_keys['keys'] }}"
+  become: no

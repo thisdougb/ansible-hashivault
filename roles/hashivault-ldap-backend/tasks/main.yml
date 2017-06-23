@@ -1,0 +1,85 @@
+---
+# tasks file for roles/hashivault-ldap-backend
+
+- name: retrieve keys locally
+  set_fact:
+    vault_keys: "{{ lookup('file','{{ role_path }}/../.hashicorp_vault_keys.json') | from_json }}"
+  delegate_to: localhost
+  become: no
+
+- set_fact:
+    vaulthost: "{{ inventory_hostname }}"
+
+- name: list auth config
+  uri:
+    url: "http://{{ vaulthost }}:8200/v1/sys/auth"
+
+    method: GET
+    HEADER_X-Vault-Token: "{{ vault_keys.root_token }}"
+    return_content: yes
+  delegate_to: localhost
+  become: no
+  register: output
+
+- name: mount ldap auth backend
+  uri:
+    url: "http://{{ vaulthost }}:8200/v1/sys/auth/ldap"
+    method: POST
+    HEADER_X-Vault-Token: "{{ vault_keys.root_token }}"
+    body:
+      path: ldap
+      description: my ldap backend
+      type: ldap
+    body_format: json
+    return_content: yes
+    status_code: 204
+  delegate_to: localhost
+  become: no
+  when: '"my ldap backend" not in output.content'
+
+- name: set ldap auth backend config
+  uri:
+    url: "http://{{ vaulthost }}:8200/v1/auth/ldap/config"
+    method: POST
+    HEADER_X-Vault-Token: "{{ vault_keys.root_token }}"
+    body:
+      url: ldap://ldap
+      userdn: ou=users,dc=example,dc=com
+      groupdn: ou=groups,dc=example,dc=com
+      binddn: cn=Manager,dc=example,dc=com
+      bindpass: password
+      starttls: false
+    body_format: json
+    status_code: 204
+  become: no
+  delegate_to: localhost
+
+- name: create vault access control policies
+  uri:
+    url: "http://{{ vaulthost }}:8200/v1/sys/policy/{{ item.key }}"
+    method: POST
+    HEADER_X-Vault-Token: "{{ vault_keys.root_token }}"
+    body:
+      rules: "{{ item.value }}"
+    body_format: json
+    status_code: 204
+  with_dict:
+    prod_policy: path "secret/ansfestdemo/*" { policy = "write" }
+    dev_policy: path "secret/ansfestdemo/*" { policy = "deny" }
+  become: no
+  delegate_to: localhost
+
+- name: set ldap group to policy mapping
+  uri:
+    url: "http://{{ vaulthost }}:8200/v1/auth/ldap/groups/{{ item.key }}"
+    method: POST
+    HEADER_X-Vault-Token: "{{ vault_keys.root_token }}"
+    body:
+      policies: "{{ item.value }}"
+    body_format: json
+    status_code: 204
+  with_dict:
+    prod_group: prod_policy
+    dev_group: dev_policy
+  become: no
+  delegate_to: localhost

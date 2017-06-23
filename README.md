@@ -2,7 +2,7 @@
 Vagrant and Ansible code to build a HashiCorp Vault instance for testing.   Built for Centos/RHEL.
 
 ### Create Vault Instance
-Create an instance to run the vault, if using Vagrant see the sub-dir ~/vagrant from this repo.   The ansible inventory file (hosts) uses the name 'vault'.
+Create an instance to run the vault, if using Vagrant see the sub-dir ~/vagrant from this repo.   The ansible inventory file uses the hostname 'vault'.
 
 ### Ansible Bootstrap
 Bootstrap the new vault instance with the Ansible ssh key, which defaults to the key in ~/.ssh/id_rsa.pub.   We also install the host systems /etc/hosts, which should contain your vault instance.   Installing net-tools is useful for testing.

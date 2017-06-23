@@ -1,0 +1,8 @@
+---
+- hosts: vault
+  roles:
+    - role: hashivault
+    - role: hashivault-init
+    - role: hashivault-unseal
+    - role: hashivault-pki-backend
+    - { role: hashivault-unseal, do_it: 'again' }

@@ -11,18 +11,18 @@ ansible $ ansible-playbook bootstrap_hosts.yml -k -K
 SSH password: 
 SUDO password[defaults to SSH password]: 
 
-PLAY [all] *********************************************************
+PLAY [all] ****************************************************************
 
-TASK [install Ansible ssh key] *************************************
+TASK [install Ansible ssh key] ********************************************
 changed: [vault]
 
-TASK [copy /etc/hosts to remote] ***********************************
+TASK [copy /etc/hosts to remote] ******************************************
 changed: [vault]
 
-TASK [install net-tools] *******************************************
+TASK [install net-tools] **************************************************
 changed: [vault]
 
-PLAY RECAP *********************************************************
+PLAY RECAP ****************************************************************
 vault                      : ok=3    changed=3    unreachable=0    failed=0
 ```
 

@@ -68,3 +68,29 @@ pki/        pki        system       system   Certificate delivery for Ansible
 secret/     generic    system       system   generic secret storage
 sys/        system     n/a          n/a      system endpoints used for control, policy and debugging
 ```
+
+### Additional Notes
+The init role drops the vault keys and root token into the home directory of the ansible host user.   This allows other roles to use the keys to unseal and read/write to the vault.   This is fine for testing, but you probably want a manual init/unseal process in production.
+```
+ansible $ cat ~/.hashicorp_vault_keys.json 
+{"keys": ["4ca011fb3c4a1ba9c97738dfc9a6424c01d3136673c5eb6ad3c86a720b39959601", "5af792ff6f420547f65b132a1b842634e2b8ccedaa00fb76cecc6856139bf04702"],
+ "keys_base64": ["TKAR+zxKG6nJdzjfyaZCTAHTE2Zzxetq08hqcgs5lZYB", "WveS/29CBUf2WxMqG4QmNOK4zO2qAPt2zsxoVhOb8EcC"], "root_token": "8ec58cb7-712e-3454-0f
+89-cd6418cc97b1"}
+```
+
+The root token (used to authenticate to vault) is also dropped into the home directory of the root user on the vault instance.   This, for testing, gives you a access to the vault for playing around and troubleshooting.   The vault cli looks for this file, as well as the $VAULT_ADDR environment variable.
+```
+[root@vault ~]# cat /root/.vault-token 
+8ec58cb7-712e-3454-0f89-cd6418cc97b1
+
+[root@vault ~]# echo $VAULT_ADDR
+http://127.0.0.1:8200
+```
+
+The PKI role sets up Vault as a Root CA, so it can distribute certificates.  In doing so the role drops vaults issuing_ca cert onto the Ansible host.   This means calling https://vault:8201 will work fine.
+```
+ansible $ ls -l /etc/pki/ca-trust/source/anchors/vault.crt 
+-rw-r--r-- 1 root root 1167 Jun 23 16:00 /etc/pki/ca-trust/source/anchors/vault.crt
+```
+
+

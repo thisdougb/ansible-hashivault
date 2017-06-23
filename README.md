@@ -1,8 +1,8 @@
 # ansible-hashivault
-Vagrant and Ansible code to build a HashiCorp Vault instance for testing.
+Vagrant and Ansible code to build a HashiCorp Vault instance for testing.   Built for Centos/RHEL.
 
 ### Create Vault Instance
-Create an instance to run the vault, if using Vagrant see the sub-dir ~/vagrant from this repo.   The ansible inventory file (~/hosts) uses the name 'vault'.
+Create an instance to run the vault, if using Vagrant see the sub-dir ~/vagrant from this repo.   The ansible inventory file (hosts) uses the name 'vault'.
 
 ### Ansible Bootstrap
 Bootstrap the new vault instance with the Ansible ssh key, which defaults to the key in ~/.ssh/id_rsa.pub.   We also install the host systems /etc/hosts, which should contain your vault instance.   Installing net-tools is useful for testing.
@@ -36,9 +36,7 @@ ansible $ ansible-playbook vault.yml
 Sudo to root on the vault instance and check that vault is up and running:
 ```
 laptop $ vagrant ssh 
-Last login: Fri Jun 23 16:00:25 2017 from ansible
 [vagrant@vault ~]$ sudo su -
-Last login: Tue Dec  6 13:39:33 GMT 2016 on tty1
 [root@vault ~]# systemctl status vault
 ● vault.service - Hashi Corp Vault
    Loaded: loaded (/etc/systemd/system/vault.service; enabled; vendor preset: disabled)
@@ -66,7 +64,7 @@ We can also check what backends vault has currently mounted:
 [root@vault ~]# vault mounts
 Path        Type       Default TTL  Max TTL  Description
 cubbyhole/  cubbyhole  n/a          n/a      per-token private secret storage
-pki/        pki        system       system   Certificate delivery for AnsibleFest London 2017
+pki/        pki        system       system   Certificate delivery for Ansible
 secret/     generic    system       system   generic secret storage
 sys/        system     n/a          n/a      system endpoints used for control, policy and debugging
 ```

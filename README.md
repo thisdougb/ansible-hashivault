@@ -16,7 +16,7 @@ PLAY [all] ****************************************************************
 TASK [install Ansible ssh key] ********************************************
 changed: [vault]
 
-TASK [install /etc/hosts to remote] ***************************************
+TASK [install /etc/hosts on remote] ***************************************
 changed: [vault]
 
 TASK [install net-tools (netstat)] ****************************************

@@ -8,7 +8,7 @@
         user: vagrant
         key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
 
-    - name: install /etc/hosts to remote
+    - name: install /etc/hosts on remote
       copy:
         src: /vagrant/etc_hosts
         remote_src: yes

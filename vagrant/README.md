@@ -1,12 +1,15 @@
 # Vagrant setup files
 
-I use Vagrant to run all the demo's.  The Vagrantfile reads servers.yml and builds each listed server.   It also writes out an /etc/hosts style file to etc_hosts, we will use this in the Ansible bootstrap play.
+The Vagrantfile reads servers.yml and builds each listed server.   It also writes out an /etc/hosts style file to etc_hosts, we will use this in the Ansible bootstrap play.
 
-An example of setting up your Vagrant env:
+An example of setting up your Vagrant env, I keep this dir outside of this cloned repo:
 
 ```
-laptop $ mkdir vault-testing
-laptop $ cd vault-testing/
+laptop $ mkdir vagrant-instances
+laptop $ ls -1
+ansible-hashivault
+vagrant-instances
+laptop $ cd vagrant-instances/
 laptop $ curl -sO https://raw.githubusercontent.com/thisdougb/ansible-hashivault/master/vagrant/Vagrantfile
 laptop $ curl -sO https://raw.githubusercontent.com/thisdougb/ansible-hashivault/master/vagrant/servers.yml
 ```

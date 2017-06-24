@@ -1,10 +1,10 @@
-#hashivault
+# hashivault
 Installs the HashiCorp Vault binary as a systemd service.
 
-##Requirements
+## Requirements
 The role was built with Ansible 2.2 and Centos 7, and installs vault as a systemd service.
 
-##Role Variables
+## Role Variables
 
 ```
 ---
@@ -21,14 +21,14 @@ cfg_path: /etc/vault.cfg
 
 The vault_src var points to a particular version of Vault, because there's no simple ~/latest.zip uri.
 
-##Dependencies
+## Dependencies
 None
 
-##Example Playbook
+## Example Playbook
 ```
 ---
 # vault.yml
-- hosts: vaulthost
+- hosts: vault
   roles:
          - { role: hashivault, tags: ['hashivault'] }
 ```
@@ -37,8 +37,8 @@ To install Vault on a node:
 ansible-playbook -i hosts vault.yml
 ```
 
-##License
+## License
 BSD
 
-##Author Information
+## Author Information
 [thisdougb](https://github.com/thisdougb)

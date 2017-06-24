@@ -2,7 +2,7 @@
 
 The Vagrantfile reads servers.yml and builds each listed server.   It also writes out an /etc/hosts style file to etc_hosts, we will use this in the Ansible bootstrap play.
 
-An example of setting up your Vagrant env, I keep this dir outside of this cloned repo:
+An example of setting up your Vagrant env, I keep Vagrant files outside of the Ansible cloned repo:
 
 ```
 laptop $ mkdir vagrant-instances

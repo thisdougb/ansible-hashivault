@@ -3,7 +3,9 @@
 
 require 'yaml'
 
-servers = YAML.load_file(File.join(File.dirname(__FILE__), 'servers.yml'))
+configuration = YAML.load_file(File.join(File.dirname(__FILE__), 'servers.yml'))
+domain = configuration['domain']
+servers = configuration['hosts']
 
 Vagrant.configure("2") do |config|
 
@@ -19,7 +21,10 @@ Vagrant.configure("2") do |config|
 end
 
 File.open('etc_hosts', 'w') { |f|
+  f.write("127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4\n")
+  f.write("::1         localhost localhost.localdomain localhost6 localhost6.localdomain6\n\n")
+
   servers.each do |server|
-    f.write("#{server['ip']}\t#{server['name']}\n")
+    f.write("#{server['ip']}\t#{server['name']}\t#{server['name']}.#{domain}\n")
   end
 }

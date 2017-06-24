@@ -10,7 +10,8 @@
 
     - name: copy /etc/hosts to remote
       copy:
-        src: /etc/hosts
+        src: /vagrant/etc_hosts
+        remote_src: yes
         dest: /etc/hosts
         owner: root
         group: root

@@ -1,6 +1,6 @@
 # Vagrant setup files
 
-I use Vagrant to run all the demo's.  The Vagrantfile reads servers.yml and builds each listed server.   It also writes out an /etc/hosts style file to ~/etc_hosts, so you can easily use this in the Ansible bootstrap play.
+I use Vagrant to run all the demo's.  The Vagrantfile reads servers.yml and builds each listed server.   It also writes out an /etc/hosts style file to etc_hosts, we will use this in the Ansible bootstrap play.
 
 An example of setting up your Vagrant env:
 
@@ -13,8 +13,10 @@ laptop $ curl -sO https://raw.githubusercontent.com/thisdougb/ansible-hashivault
 ```
 laptop $ cat servers.yml 
 ---
-- name: vault
-  ip: 172.28.128.16
+domain: example.com
+hosts:
+  - name: vault
+    ip: 172.28.128.16
   
 ```
 ```
@@ -24,7 +26,9 @@ laptop $ cat Vagrantfile
 
 require 'yaml'
 
-servers = YAML.load_file(File.join(File.dirname(__FILE__), 'servers.yml'))
+configuration = YAML.load_file(File.join(File.dirname(__FILE__), 'servers.yml'))
+domain = configuration['domain']
+servers = configuration['hosts']
 
 Vagrant.configure("2") do |config|
 
@@ -40,8 +44,11 @@ Vagrant.configure("2") do |config|
 end
 
 File.open('etc_hosts', 'w') { |f|
+  f.write("127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4\n")
+  f.write("::1         localhost localhost.localdomain localhost6 localhost6.localdomain6\n\n")
+
   servers.each do |server|
-    f.write("#{server['ip']}\t#{server['name']}\n")
+    f.write("#{server['ip']}\t#{server['name']}\t#{server['name']}.#{domain}\n")
   end
 }
 ```

@@ -19,7 +19,6 @@ domain: example.com
 hosts:
   - name: vault
     ip: 172.28.128.16
-  
 ```
 
 Now we can bring up our Vagrant instances:

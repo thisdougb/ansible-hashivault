@@ -10,6 +10,8 @@ laptop $ cd vault-testing/
 laptop $ curl -sO https://raw.githubusercontent.com/thisdougb/ansible-hashivault/master/vagrant/Vagrantfile
 laptop $ curl -sO https://raw.githubusercontent.com/thisdougb/ansible-hashivault/master/vagrant/servers.yml
 ```
+
+Our instances are defined in servers.yml:
 ```
 laptop $ cat servers.yml 
 ---
@@ -19,39 +21,8 @@ hosts:
     ip: 172.28.128.16
   
 ```
-```
-laptop $ cat Vagrantfile 
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
 
-require 'yaml'
-
-configuration = YAML.load_file(File.join(File.dirname(__FILE__), 'servers.yml'))
-domain = configuration['domain']
-servers = configuration['hosts']
-
-Vagrant.configure("2") do |config|
-
-  config.vm.box = "centos7"
-  config.vm.box_check_update = false
-
-  servers.each do |server|
-    config.vm.define server['name'] do |srv|
-      srv.vm.hostname = server['name']
-      srv.vm.network "private_network", ip: server['ip']
-    end
-  end
-end
-
-File.open('etc_hosts', 'w') { |f|
-  f.write("127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4\n")
-  f.write("::1         localhost localhost.localdomain localhost6 localhost6.localdomain6\n\n")
-
-  servers.each do |server|
-    f.write("#{server['ip']}\t#{server['name']}\t#{server['name']}.#{domain}\n")
-  end
-}
-```
+Now we can bring up our Vagrant instances:
 ```
 laptop $ vagrant up
 Bringing machine 'vault' up with 'virtualbox' provider...

@@ -99,5 +99,8 @@ The PKI role sets up Vault as a Root CA, so it can distribute certificates.  In 
 ansible $ ls -l /etc/pki/ca-trust/source/anchors/vault.crt 
 -rw-r--r-- 1 root root 1167 Jun 23 16:00 /etc/pki/ca-trust/source/anchors/vault.crt
 ```
-
-
+Checking the https connection from the ansible node:
+```
+ansible $ wget -qO- https://vault.example.com:8201/v1/sys/health
+{"initialized":true,"sealed":false,"standby":false,"server_time_utc":1498389760,"version":"0.6.2","cluster_name":"vault-cluster-0ea8d19c","cluster_id":"fc612a4e-b0a1-bfa7-f81d-b17c994ec12e"}
+```

@@ -58,7 +58,7 @@ Bringing machine 'vault' up with 'virtualbox' provider...
 ==> vault: Mounting shared folders...
     vault: /vagrant => /Users/doug/dev/vagrant-vault
 ```
-The Vagrantfile script writes out the etc_hosts file, which is accessible on the target host through the shared mounted folder.   Our Ansible bootstrap_hosts.yml moves etc_hosts to /etc/hosts.
+The Vagrantfile script writes out the etc_hosts file, which is accessible on the target host through the shared mounted folder _/vagrant_.   Our Ansible _bootstrap_hosts.yml_ moves etc_hosts to _/etc/hosts_.
 ```
 laptop $ cat etc_hosts 
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4

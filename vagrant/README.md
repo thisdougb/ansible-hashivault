@@ -5,11 +5,11 @@ The Vagrantfile reads servers.yml and builds each listed server.   It also write
 An example of setting up your Vagrant env, I keep Vagrant files outside of the Ansible cloned repo:
 
 ```
-laptop $ mkdir vagrant-instances
+laptop $ mkdir vagrant-vault
 laptop $ ls -1
 ansible-hashivault
 vagrant-instances
-laptop $ cd vagrant-instances/
+laptop $ cd vagrant-vault/
 laptop $ curl -sO https://raw.githubusercontent.com/thisdougb/ansible-hashivault/master/vagrant/Vagrantfile
 laptop $ curl -sO https://raw.githubusercontent.com/thisdougb/ansible-hashivault/master/vagrant/servers.yml
 ```
@@ -56,7 +56,7 @@ Bringing machine 'vault' up with 'virtualbox' provider...
 ==> vault: Setting hostname...
 ==> vault: Configuring and enabling network interfaces...
 ==> vault: Mounting shared folders...
-    vault: /vagrant => /Users/doug/dev/vagrant-instances
+    vault: /vagrant => /Users/doug/dev/vagrant-vault
 ```
 The Vagrantfile script writes out the etc_hosts file, which is accessible on the target host through the shared mounted folder.   Our Ansible bootstrap_hosts.yml moves etc_hosts to /etc/hosts.
 ```
@@ -66,3 +66,4 @@ laptop $ cat etc_hosts
 
 172.28.128.16   vault   vault.example.com
 ```
+The next step is typically to bootstrap the new instances with the bootstrap_hosts.yml Ansible playbook in the root of the project repo.

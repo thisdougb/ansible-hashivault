@@ -30,6 +30,8 @@
     body:
       common_name:
         "{{ ansible_fqdn }}"
+      alt_names:
+        "{{ ansible_hostname }}"
     body_format: json
     return_content: yes
   register: root_cert_data

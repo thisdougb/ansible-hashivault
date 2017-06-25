@@ -3,6 +3,8 @@ Initialises (resets!) a HashiCorp Vault via http API calls, and stores the keys 
 
 This role was built for dev and test purposes, and is partnered with the hashivault-unseal role.
 
+*WARNING* This role removes any existing Vault data, fully resets the Vault.
+
 ## Requirements
 None
 

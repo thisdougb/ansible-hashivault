@@ -3,7 +3,7 @@
 
 - name: retrieve keys locally
   set_fact:
-    vault_keys: "{{ lookup('file','{{ role_path }}/../.hashicorp_vault_keys.json') | from_json }}"
+    vault_keys: "{{ lookup('file','~/.hashicorp_vault_keys.json') | from_json }}"
   delegate_to: localhost
   become: no
 

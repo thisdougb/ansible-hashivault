@@ -8,7 +8,7 @@ An example of setting up your Vagrant env, I keep Vagrant files outside of the A
 laptop $ mkdir vagrant-vault
 laptop $ ls -1
 ansible-hashivault
-vagrant-instances
+vagrant-vault
 laptop $ cd vagrant-vault/
 laptop $ curl -sO https://raw.githubusercontent.com/thisdougb/ansible-hashivault/master/vagrant/Vagrantfile
 laptop $ curl -sO https://raw.githubusercontent.com/thisdougb/ansible-hashivault/master/vagrant/servers.yml
@@ -66,4 +66,4 @@ laptop $ cat etc_hosts
 
 172.28.128.16   vault   vault.example.com
 ```
-The next step is typically to bootstrap the new instances with the bootstrap_hosts.yml Ansible playbook in the root of the project repo.
+The next step is typically to bootstrap the new instances with the _bootstrap_hosts.yml_ Ansible playbook in the root of the project repo.

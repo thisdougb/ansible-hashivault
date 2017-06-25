@@ -1,31 +1,49 @@
-Role Name
+hashivault-pki-backend
 =========
 
-A brief description of the role goes here.
+Mounts the PKI backend, setting up the vault instance as a root CA capable of issuing certificates.   Also starts a vault listener using TLS on port 8021, adding its root CA key to the calling ansible node allowing subsequent vault API calls using https.
+
 
 Requirements
 ------------
+We use the domain name from the vault instance in the certificate generation, so we need gather_facts set in the playbook.
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+      common_name:
+        "{{ ansible_fqdn }}"
+
+Adding a new listener requires a restart of the vault service (to re-read the vault.cfg), so the vault will have to be unsealed after this role runs.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
 
 Dependencies
 ------------
+The role authenticates against vault using the root_token, which the vault-init role saves locally on the ansible node.
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+```
+- name: retrieve keys locally
+  set_fact:
+    vault_keys: "{{ lookup('file','~/.hashicorp_vault_keys.json') | from_json }}"
+  delegate_to: localhost
+  become: no
+```
+
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```
+---
+- hosts: vault
+  gather_facts: yes
+  roles:
+    - role: hashivault
+    - role: hashivault-init
+    - role: hashivault-unseal
+    - role: hashivault-pki-backend
+    - { role: hashivault-unseal, do_it: 'again' }
+```
 
 License
 -------
@@ -34,5 +52,4 @@ BSD
 
 Author Information
 ------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+@thisdougb

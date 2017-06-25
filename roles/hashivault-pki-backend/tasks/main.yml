@@ -7,11 +7,6 @@
   delegate_to: localhost
   become: no
 
-#- name: mount vault pki
-#  command: /usr/local/bin/vault mount pki
-#  environment:
-#    VAULT_ADDR: "http://127.0.0.1:8200/"
-
 - name: mount the pki backend
   uri:
     url: http://127.0.0.1:8200/v1/sys/mounts/pki
@@ -22,11 +17,11 @@
       type:
         pki
       description:
-        Certificate delivery for AnsibleFest London 2017
+        Certificate delivery for Ansible
     status_code: 204
     body_format: json
 
-- name: generate root cert
+- name: generate our root cert
   uri:
     url: http://127.0.0.1:8200/v1/pki/root/generate/exported
     method: POST
@@ -34,20 +29,20 @@
       X-Vault-Token: "{{ vault_keys.root_token }}"
     body:
       common_name:
-        vault.ansiblefest.com
+        "{{ ansible_fqdn }}"
     body_format: json
     return_content: yes
   register: root_cert_data
 
 - name: create our pki policy
   uri:
-    url: http://127.0.0.1:8200/v1/pki/roles/fest_london
+    url: "http://127.0.0.1:8200/v1/pki/roles/{{ ansible_domain }}"
     method: POST
     headers:
       X-Vault-Token: "{{ vault_keys.root_token }}"
     body:
       allowed_domains:
-        ansiblefest.com
+        "{{ ansible_domain }}"
       allow_subdomains:
         true
       max_ttl:

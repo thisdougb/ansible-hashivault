@@ -1,7 +1,7 @@
 # ansible-hashivault
 Vagrant and Ansible code to build a HashiCorp Vault instance for testing.   Built for Centos/RHEL.
 
-Demo video: https://vimeo.com/223884742
+Demo screencast: https://vimeo.com/223884742
 
 ### Create Vagrant Instance
 Create a Vagrant instance to run the vault, see the sub-dir _vagrant_ from this repo.
